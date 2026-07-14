@@ -2,11 +2,11 @@ import Reveal from "../components/Reveal.jsx";
 
 const PHOTOS = [
   "./group1.jpg",
-  "./group3.jpg",
-  "./group2.jpg",
-  "./group8.jpg",
-  "./group4.jpg",
-  "./group6.jpg",
+  "./group3.jpeg",
+  "./group2.jpeg",
+  "./group8.jpeg",
+  "./group4.jpeg",
+  "./group6.jpeg",
   "./group7.jpeg",
   "./group5.jpeg",
 ];

@@ -56,7 +56,7 @@ export default function Home() {
       }}>
         <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
           <img
-            src="./gate.jpg"
+            src="./gate.png"
             alt="Children learning together"
             style={{
               width: "100%", height: "100%", objectFit: "cover",
