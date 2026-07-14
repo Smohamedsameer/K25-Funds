@@ -1,4 +1,4 @@
-const BASE_URL = "http://k25-backend-production.up.railway.app";
+const BASE_URL = "https://k25-backend-production.up.railway.app";
 
 async function handle(res) {
   if (!res.ok) {
