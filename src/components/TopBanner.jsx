@@ -1,4 +1,4 @@
-import { useMenu } from "./MenuContext.jsx";
+import { useMenu } from "./Menucontext.jsx";
 
 export const BANNER_HEIGHT = 64; // px — keep Navbar.jsx's `top` in sync with this
 

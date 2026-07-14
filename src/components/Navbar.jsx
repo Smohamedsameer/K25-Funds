@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { BANNER_HEIGHT } from "./TopBanner.jsx";
-import { useMenu } from "./MenuContext.jsx";
+import { useMenu } from "./Menucontext.jsx";
 
 const LINKS = [
   { label: "Home", to: "/" },
