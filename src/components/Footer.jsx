@@ -5,7 +5,7 @@ import { InstagramIcon, FacebookIcon, WhatsAppIcon } from "./Socialicons.jsx";
 const SOCIALS = [
   { label: "Instagram", href: "https://instagram.com/", icon: InstagramIcon },
   { label: "Facebook", href: "https://facebook.com/kaleemians25", icon: FacebookIcon },
-  { label: "WhatsApp", href: "https://wa.me/918148771210?text=hi", icon: WhatsAppIcon },
+  { label: "WhatsApp", href: "https://wa.me/+918148771210?text=hi", icon: WhatsAppIcon },
   { label: "Email", href: "mailto:sameerkaleemi10@gmail.com", icon: Mail },
 ];
 
