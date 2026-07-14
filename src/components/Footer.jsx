@@ -3,10 +3,10 @@ import { InstagramIcon, FacebookIcon, WhatsAppIcon } from "./Socialicons.jsx";
 
 /* Replace these placeholder links with your real profile/contact links */
 const SOCIALS = [
-  { label: "Instagram", href: "https://instagram.com/kaleemians25", icon: InstagramIcon },
+  { label: "Instagram", href: "https://instagram.com/", icon: InstagramIcon },
   { label: "Facebook", href: "https://facebook.com/kaleemians25", icon: FacebookIcon },
-  { label: "WhatsApp", href: "https://wa.me/910000000000?text=hi", icon: WhatsAppIcon },
-  { label: "Email", href: "mailto:hello@kaleemians25.org", icon: Mail },
+  { label: "WhatsApp", href: "https://wa.me/918148771210?text=hi", icon: WhatsAppIcon },
+  { label: "Email", href: "mailto:sameerkaleemi10@gmail.com", icon: Mail },
 ];
 
 export default function Footer() {
