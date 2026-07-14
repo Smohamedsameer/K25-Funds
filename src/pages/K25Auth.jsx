@@ -13,7 +13,7 @@ const emptyForm = { firstName: "", lastName: "", phone: "", dob: "", email: "", 
 
 export default function K25Auth() {
   const [mode, setMode] = useState("register"); // register | login
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState("emptyForm");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [popup, setPopup] = useState(false);
