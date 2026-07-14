@@ -15,7 +15,7 @@ export default function About() {
       }}>
         <div style={{ position: "absolute", inset: 0 }}>
           <img
-            src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1600&q=80"
+            src="./group.png"
             alt="Community hands together"
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />

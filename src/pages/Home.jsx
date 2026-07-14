@@ -56,10 +56,10 @@ export default function Home() {
       }}>
         <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
           <img
-            src="./group.jpg"
+            src="./gate.jpg"
             alt="Children learning together"
             style={{
-              width: "100%", height: "100%", objectFit: "contain",
+              width: "100%", height: "100%", objectFit: "cover",
               animation: "heroZoom 22s ease-in-out infinite alternate",
             }}
           />

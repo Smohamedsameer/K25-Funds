@@ -35,6 +35,7 @@ function yearOf(monthKeyStr) {
 function ContributionRow({ c }) {
   const s = STATUS_STYLE[c.status] || STATUS_STYLE.PENDING;
   return (
+    
     <div style={{
       display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10,
       padding: "14px 18px", borderRadius: 14, background: "var(--surface)", border: "1px solid var(--line)",
@@ -212,6 +213,9 @@ export default function UserDashboard() {
 
       <div style={{ maxWidth: 760, margin: "0 auto", padding: "120px 24px 100px" }}>
         <Reveal>
+          <br></br>
+          <br></br>
+          <br></br>
           <h1 className="font-display" style={{ fontSize: 28, color: "var(--forest)", fontWeight: 500, marginBottom: 8 }}>
             Welcome, {user.firstName}
           </h1>

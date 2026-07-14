@@ -1,14 +1,14 @@
 import Reveal from "../components/Reveal.jsx";
 
 const PHOTOS = [
-  "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&q=80",
-  "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&q=80",
-  "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80",
-  "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=600&q=80",
-  "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80",
-  "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=600&q=80",
-  "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=600&q=80",
-  "https://images.unsplash.com/photo-1594608661623-aa0bd3a69d98?w=600&q=80",
+  "./group1.jpg",
+  "./group3.jpg",
+  "./group2.jpg",
+  "./group8.jpg",
+  "./group4.jpg",
+  "./group6.jpg",
+  "./group7.jpeg",
+  "./group5.jpeg",
 ];
 
 export default function Gallery() {
