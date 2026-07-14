@@ -11,7 +11,7 @@ import UserDashboard from "./pages/UserDashboard.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import TopBanner from "./components/TopBanner.jsx";
 import Footer from "./components/Footer.jsx";
-import { MenuProvider } from "./components/MenuContext.jsx";
+import { MenuProvider } from "./components/Menucontext.jsx";
 
 // Dashboards have their own minimal header — public Navbar only shows elsewhere.
 const NO_NAVBAR_ROUTES = ["/dashboard", "/admin"];
