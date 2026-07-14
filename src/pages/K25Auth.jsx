@@ -13,7 +13,7 @@ const emptyForm = { firstName: "", lastName: "", phone: "", dob: "", email: "", 
 
 export default function K25Auth() {
   const [mode, setMode] = useState("register"); // register | login
-  const [form, setForm] = useState("emptyForm");
+  const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [popup, setPopup] = useState(false);
@@ -38,8 +38,9 @@ export default function K25Auth() {
       const result = mode === "register"
         ? await api.k25Register(form)
         : await api.k25Login({ email: form.email, password: form.password });
-      localStorage.setItem("K25_user", JSON.stringify(result));
+      localStorage.setItem("k25_user", JSON.stringify(result));
       setPopup(true);
+      navigate("/dashboard");
     } catch (err) {
       setError(err.message || "Something went wrong");
     } finally {
