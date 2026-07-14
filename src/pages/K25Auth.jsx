@@ -38,7 +38,7 @@ export default function K25Auth() {
       const result = mode === "register"
         ? await api.k25Register(form)
         : await api.k25Login({ email: form.email, password: form.password });
-      localStorage.setItem("fund-raiser", JSON.stringify(result));
+      localStorage.setItem("K25_user", JSON.stringify(result));
       setPopup(true);
     } catch (err) {
       setError(err.message || "Something went wrong");

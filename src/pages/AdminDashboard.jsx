@@ -27,7 +27,7 @@ const STATUS_STYLE = {
 
 // TODO: replace with the real backend origin from api.js once it's shared —
 // this must match whatever base URL your other api.* calls use.
-const BACKEND_ORIGIN = "http://localhost:8080";
+const BACKEND_ORIGIN = import.meta.env.VITE_API_URL;
 
 function formatDate(iso) {
   if (!iso) return "";

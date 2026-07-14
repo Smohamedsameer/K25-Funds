@@ -5,7 +5,7 @@ import Reveal from "../components/Reveal.jsx";
 
 // TODO: replace with the real backend origin from api.js once it's shared —
 // this must match whatever base URL your other api.* calls use.
-const BACKEND_ORIGIN = "http://localhost:8080";
+const BACKEND_ORIGIN = import.meta.env.VITE_API_URL;
 
 const STATUS_STYLE = {
   PENDING: { bg: "#F4E9D4", color: "#8A6A1E" },
