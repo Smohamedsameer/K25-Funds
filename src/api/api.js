@@ -1,4 +1,4 @@
-const BASE_URL = "https://k25-backend-production.up.railway.app";
+const BASE_URL = `${import.meta.env.VITE_API_URL}/api`;
 
 async function handle(res) {
   if (!res.ok) {
@@ -78,7 +78,7 @@ export const api = {
 
   getUserContributions: (userId) => fetch(`${BASE_URL}/contributions/user/${userId}`).then(handle),
 
-  fileUrl: (path) => path ? `http://localhost:8080/uploads/${path}` : null,
+  fileUrl: (path) => path ? `${import.meta.env.VITE_API_URL}/uploads/${path}` : null,
 };
 
 export default api;
