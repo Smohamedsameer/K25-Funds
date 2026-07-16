@@ -25,17 +25,14 @@ const STATUS_STYLE = {
   REJECTED: { bg: "#F6E1DE", color: "#B54B3A" },
 };
 
-// TODO: replace with the real backend origin from api.js once it's shared —
-// this must match whatever base URL your other api.* calls use.
+// Used only for the CSV/report export links below — those are real backend
+// routes, not uploaded files, so they don't go through api.fileUrl().
 const BACKEND_ORIGIN = import.meta.env.VITE_API_URL;
 
 function formatDate(iso) {
   if (!iso) return "";
   return new Date(iso).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
 }
-
-// TODO: replace with the real backend origin from api.js once it's shared —
-// this should be whatever base URL your axios/fetch calls in api.js use.
 
 const monthLabel = new Date().toLocaleDateString("en-IN", { month: "long", year: "numeric" });
 
@@ -49,7 +46,7 @@ export default function AdminDashboard() {
   const [expenseDesc, setExpenseDesc] = useState("");
   const [expenseFile, setExpenseFile] = useState(null);
   const [expenses, setExpenses] = useState([]);
-  const [targetMsg, setTargetMsg] = useState(null);   // { type: 'ok'|'err', text }
+  const [targetMsg, setTargetMsg] = useState(null);
   const [expenseMsg, setExpenseMsg] = useState(null);
   const [targetBusy, setTargetBusy] = useState(false);
   const [expenseBusy, setExpenseBusy] = useState(false);
@@ -181,7 +178,7 @@ export default function AdminDashboard() {
                   style={{ padding: "10px 14px", borderRadius: 10, border: "1px solid var(--line)" }} />
                 <input type="text" placeholder="Description" value={expenseDesc} onChange={e => setExpenseDesc(e.target.value)}
                   style={{ padding: "10px 14px", borderRadius: 10, border: "1px solid var(--line)" }} />
-                  <h6>Upload Payment Screenshot</h6>
+                <h6>Upload Payment Screenshot</h6>
                 <input type="file" accept="image/*" onChange={e => setExpenseFile(e.target.files[0])} style={{ fontSize: 12 }} />
                 <button type="submit" disabled={expenseBusy} style={{ padding: "10px 0", borderRadius: 10, border: "none", background: "var(--forest)", color: "#fff", fontWeight: 600, opacity: expenseBusy ? 0.6 : 1 }}>
                   {expenseBusy ? "Adding…" : "Add Expense"}
@@ -215,7 +212,8 @@ export default function AdminDashboard() {
           {contributions.length === 0 && <p style={{ fontSize: 13, color: "var(--muted)" }}>No contributions submitted yet.</p>}
           {contributions.map(c => {
             const s = STATUS_STYLE[c.status] || STATUS_STYLE.PENDING;
-            const hasScreenshot = !!c.screenshotUrl;
+            const shotPath = api.screenshotPathOf(c);
+            const shotUrl = api.fileUrl(shotPath);
             return (
               <div key={c.id} style={{
                 display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10,
@@ -232,9 +230,9 @@ export default function AdminDashboard() {
                     </span>
                   </div>
                 </div>
-                {hasScreenshot && (
+                {shotUrl && (
                   <button
-                    onClick={() => setPreviewImg(`${BACKEND_ORIGIN}${c.screenshotUrl}`)}
+                    onClick={() => setPreviewImg(shotUrl)}
                     style={{
                       fontSize: 12, color: "var(--forest)", background: "transparent",
                       border: "none", textDecoration: "underline", cursor: "pointer", padding: 0,
@@ -307,23 +305,31 @@ export default function AdminDashboard() {
         </Reveal>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {expenses.length === 0 && <p style={{ fontSize: 13, color: "var(--muted)" }}>No expenses logged yet.</p>}
-          {(showAllExpenses ? expenses : expenses.slice(0, 3)).map(ex => (
-            <div key={ex.id} style={{
-              display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10,
-              padding: "14px 18px", borderRadius: 14, background: "var(--surface)", border: "1px solid var(--line)",
-            }}>
-              <div>
-                <span className="font-mono" style={{ fontSize: 12, color: "var(--muted)", marginRight: 10 }}>
-                  {formatDate(ex.createdAt)}
-                </span>
-                <span className="font-mono" style={{ fontSize: 14, fontWeight: 600 }}>₹{Number(ex.amount).toLocaleString("en-IN")}</span>
-                <span style={{ fontSize: 13, color: "var(--muted)", marginLeft: 10 }}>{ex.description}</span>
+          {(showAllExpenses ? expenses : expenses.slice(0, 3)).map(ex => {
+            const shotUrl = api.fileUrl(api.screenshotPathOf(ex));
+            return (
+              <div key={ex.id} style={{
+                display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10,
+                padding: "14px 18px", borderRadius: 14, background: "var(--surface)", border: "1px solid var(--line)",
+              }}>
+                <div>
+                  <span className="font-mono" style={{ fontSize: 12, color: "var(--muted)", marginRight: 10 }}>
+                    {formatDate(ex.createdAt)}
+                  </span>
+                  <span className="font-mono" style={{ fontSize: 14, fontWeight: 600 }}>₹{Number(ex.amount).toLocaleString("en-IN")}</span>
+                  <span style={{ fontSize: 13, color: "var(--muted)", marginLeft: 10 }}>{ex.description}</span>
+                </div>
+                {shotUrl && (
+                  <button
+                    onClick={() => setPreviewImg(shotUrl)}
+                    style={{ fontSize: 12, color: "var(--forest)", background: "transparent", border: "none", textDecoration: "underline", cursor: "pointer", padding: 0 }}
+                  >
+                    Screenshot
+                  </button>
+                )}
               </div>
-              {ex.screenshotUrl && (
-                <a href={`${BACKEND_ORIGIN}${ex.screenshotUrl}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: "var(--forest)" }}>ScreenShot</a>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
         {expenses.length > 3 && (
           <button

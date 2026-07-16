@@ -12,7 +12,6 @@ async function handle(res) {
 
 export const api = {
   // ── Public stats (Home page cards) ─────────────────────────
-  // PublicController → GET /api/summary → { target, monthIncome, contributors }
   getSummary: () => fetch(`${BASE_URL}/summary`).then(handle),
 
   // ── K25 auth (K25Controller) ────────────────────────────────
@@ -26,7 +25,6 @@ export const api = {
 
   getUser: (id) => fetch(`${BASE_URL}/k25/${id}`).then(handle),
 
-  // Self-delete (User Dashboard "logout & delete account")
   deleteUser: (id) => fetch(`${BASE_URL}/k25/${id}`, { method: "DELETE" }).then(handle),
 
   // ── Admin auth + management (AdminController, all under /api/admin) ─
@@ -36,7 +34,6 @@ export const api = {
 
   getAllUsers: () => fetch(`${BASE_URL}/admin/users`).then(handle),
 
-  // Admin removing a member (different endpoint than self-delete above)
   deleteUserAsAdmin: (id) => fetch(`${BASE_URL}/admin/users/${id}`, { method: "DELETE" }).then(handle),
 
   getContributions: () => fetch(`${BASE_URL}/admin/contributions`).then(handle),
@@ -54,7 +51,7 @@ export const api = {
   updateTarget: (amount) => fetch(`${BASE_URL}/admin/target`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ amount: String(amount) }), // backend expects Map<String,String>
+    body: JSON.stringify({ amount: String(amount) }),
   }).then(handle),
 
   getExpenses: () => fetch(`${BASE_URL}/admin/expenses`).then(handle),
@@ -63,7 +60,7 @@ export const api = {
     const form = new FormData();
     form.append("amount", amount);
     form.append("description", description);
-    form.append("screenshot", file); // required by AdminController, not optional
+    form.append("screenshot", file);
     return fetch(`${BASE_URL}/admin/expenses`, { method: "POST", body: form }).then(handle);
   },
 
@@ -72,13 +69,26 @@ export const api = {
     const form = new FormData();
     form.append("userId", userId);
     form.append("amount", amount);
-    form.append("screenshot", file); // required by ContributionController, not optional
+    form.append("screenshot", file);
     return fetch(`${BASE_URL}/contributions`, { method: "POST", body: form }).then(handle);
   },
 
   getUserContributions: (userId) => fetch(`${BASE_URL}/contributions/user/${userId}`).then(handle),
 
-  fileUrl: (path) => path ? `${import.meta.env.VITE_API_URL}/uploads/${path}` : null,
+  // ── Screenshot / uploaded-file URL builder ────────────────────
+  // Works no matter which shape the backend returns:
+  //   "abc.jpg"  |  "uploads/abc.jpg"  |  "/uploads/abc.jpg"  |  "https://.../abc.jpg"
+  fileUrl: (path) => {
+    if (!path) return null;
+    if (/^https?:\/\//i.test(path)) return path;
+    const clean = path.replace(/^\/+/, "");
+    const withUploads = clean.startsWith("uploads/") ? clean : `uploads/${clean}`;
+    return `${import.meta.env.VITE_API_URL}/${withUploads}`;
+  },
+
+  // Pulls whichever field name the backend actually used for a record's screenshot.
+  screenshotPathOf: (record) =>
+    record?.screenshotPath ?? record?.screenshotUrl ?? record?.screenshot ?? null,
 };
 
 export default api;

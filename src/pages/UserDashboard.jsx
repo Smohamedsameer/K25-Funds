@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import Reveal from "../components/Reveal.jsx";
+import api from "../api/api.js";
 
-// TODO: replace with the real backend origin from api.js once it's shared —
-// this must match whatever base URL your other api.* calls use.
 const BACKEND_ORIGIN = import.meta.env.VITE_API_URL;
 
 const STATUS_STYLE = {
@@ -34,8 +33,9 @@ function yearOf(monthKeyStr) {
 
 function ContributionRow({ c }) {
   const s = STATUS_STYLE[c.status] || STATUS_STYLE.PENDING;
+  const shotUrl = api.fileUrl(api.screenshotPathOf(c));
+
   return (
-    
     <div style={{
       display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10,
       padding: "14px 18px", borderRadius: 14, background: "var(--surface)", border: "1px solid var(--line)",
@@ -48,9 +48,9 @@ function ContributionRow({ c }) {
           ₹{Number(c.amount).toLocaleString("en-IN")}
         </span>
       </div>
-      {c.screenshotPath && (
+      {shotUrl && (
         <a
-          href={`${BACKEND_ORIGIN}/uploads/${c.screenshotPath}`}
+          href={shotUrl}
           target="_blank"
           rel="noopener noreferrer"
           style={{ fontSize: 12, color: "var(--forest)" }}
@@ -72,19 +72,16 @@ export default function UserDashboard() {
   const [amount, setAmount] = useState("");
   const [screenshot, setScreenshot] = useState(null);
   const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState(null); // { type: 'ok'|'err', text }
-  const [openMonths, setOpenMonths] = useState({}); // { [monthKey]: bool }
-  const [openYears, setOpenYears] = useState({}); // { [year]: bool }
+  const [msg, setMsg] = useState(null);
+  const [openMonths, setOpenMonths] = useState({});
+  const [openYears, setOpenYears] = useState({});
 
   const today = new Date();
   const currentMonthKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
   const currentYear = String(today.getFullYear());
 
   const loadHistory = (userId) => {
-    fetch(`${BACKEND_ORIGIN}/api/contributions/user/${userId}`)
-      .then(res => res.json())
-      .then(setContributions)
-      .catch(() => {});
+    api.getUserContributions(userId).then(setContributions).catch(() => {});
   };
 
   useEffect(() => {
@@ -103,16 +100,7 @@ export default function UserDashboard() {
     setBusy(true);
     setMsg(null);
     try {
-      const form = new FormData();
-      form.append("userId", user.id);
-      form.append("amount", amount);
-      form.append("screenshot", screenshot);
-
-      const res = await fetch(`${BACKEND_ORIGIN}/api/contributions`, { method: "POST", body: form });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || "Could not submit contribution.");
-      }
+      await api.submitContribution(user.id, amount, screenshot);
       setMsg({ type: "ok", text: "Contribution submitted — pending admin review." });
       setAmount(""); setScreenshot(null);
       loadHistory(user.id);
@@ -123,7 +111,6 @@ export default function UserDashboard() {
     }
   };
 
-  // Group contributions by month, most recent first
   const grouped = useMemo(() => {
     const map = {};
     for (const c of contributions) {
@@ -136,9 +123,6 @@ export default function UserDashboard() {
 
   const toggleMonth = (key) => setOpenMonths(prev => ({ ...prev, [key]: !prev[key] }));
 
-  // Group the month buckets above into year buckets. This is what makes the
-  // history "empty" after a year rolls over — last year's months collapse
-  // behind a single "2025" button instead of listing indefinitely.
   const groupedByYear = useMemo(() => {
     const map = {};
     for (const [key, items] of grouped) {
