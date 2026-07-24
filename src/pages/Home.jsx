@@ -6,14 +6,20 @@ import api from "../api/api.js";
 function CountUp({ value, prefix = "", duration = 1400 }) {
   const [display, setDisplay] = useState(0);
   const ref = useRef(null);
-  const started = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    // Scoped to THIS effect run (i.e. this specific `value`) — not a
+    // persistent ref shared across renders. Previously this was a `useRef`
+    // that stayed `true` forever after the very first animation fired, so
+    // if the real fetched value arrived *after* that first (often 0) fire,
+    // the corrected number could never animate in and the card stayed stuck
+    // showing the original default forever, even after a refresh.
+    let animated = false;
     const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !started.current) {
-        started.current = true;
+      if (entry.isIntersecting && !animated) {
+        animated = true;
         const start = performance.now();
         const tick = (now) => {
           const p = Math.min((now - start) / duration, 1);
