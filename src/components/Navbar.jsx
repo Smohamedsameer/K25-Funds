@@ -39,6 +39,18 @@ export default function Navbar() {
     }
   };
 
+  // Same idea for the "Login" CTA button — its actual destination stays
+  // "/login" (so typing/visiting it directly still works as a full page),
+  // but if we're already on Home, just scroll down to the #login section.
+  const handleLoginClick = (e) => {
+    setMenuOpen(false);
+    if (location.pathname === "/") {
+      e.preventDefault();
+      document.getElementById("login")?.scrollIntoView({ behavior: "smooth" });
+      window.history.replaceState(null, "", "/#login");
+    }
+  };
+
   return (
     <header style={{
       position: "fixed", top: BANNER_HEIGHT, left: 0, right: 0, zIndex: 100,
@@ -90,6 +102,7 @@ export default function Navbar() {
 
             <Link
               to="/login"
+              onClick={handleLoginClick}
               style={{
                 marginLeft: 8, fontSize: 14, fontWeight: 600,
                 padding: "9px 22px", borderRadius: 9999, textDecoration: "none",
@@ -134,6 +147,7 @@ export default function Navbar() {
             })}
             <Link
               to="/login"
+              onClick={handleLoginClick}
               style={{
                 marginTop: 6, textAlign: "center", fontSize: 15, fontWeight: 600,
                 padding: "12px 0", borderRadius: 14, textDecoration: "none",
