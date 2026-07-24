@@ -4,10 +4,14 @@ import { BANNER_HEIGHT } from "./TopBanner.jsx";
 import { useMenu } from "./Menucontext.jsx";
 
 const LINKS = [
-  { label: "Home", to: "/" },
-  { label: "About", to: "/about" },
-  { label: "Purpose", to: "/purpose" },
-  { label: "Gallery", to: "/gallery" },
+  { label: "Home", to: "/", match: ["/"] },
+  // These point at the on-page sections on Home ("/#about" etc). The
+  // standalone /about, /purpose, /gallery pages still exist separately —
+  // `match` just makes the nav highlight correctly if someone is on one
+  // of those standalone pages directly.
+  { label: "About", to: "/#about", sectionId: "about", match: ["/about"] },
+  { label: "Purpose", to: "/#purpose", sectionId: "purpose", match: ["/purpose"] },
+  { label: "Gallery", to: "/#gallery", sectionId: "gallery", match: ["/gallery"] },
 ];
 
 export default function Navbar() {
@@ -23,6 +27,17 @@ export default function Navbar() {
 
   // Close the mobile menu whenever the route changes
   useEffect(() => { setMenuOpen(false); }, [location.pathname, setMenuOpen]);
+
+  // If we're already on "/", clicking About/Purpose/Gallery should just
+  // smooth-scroll to that section instead of doing a full navigation.
+  const handleNavClick = (e, link) => {
+    setMenuOpen(false);
+    if (link.sectionId && location.pathname === "/") {
+      e.preventDefault();
+      document.getElementById(link.sectionId)?.scrollIntoView({ behavior: "smooth" });
+      window.history.replaceState(null, "", link.to);
+    }
+  };
 
   return (
     <header style={{
@@ -52,11 +67,12 @@ export default function Navbar() {
           {/* Desktop links */}
           <div className="k25-nav-links" style={{ display: "flex", alignItems: "center", gap: 4 }}>
             {LINKS.map(link => {
-              const active = location.pathname === link.to;
+              const active = link.match.includes(location.pathname);
               return (
                 <Link
                   key={link.to}
                   to={link.to}
+                  onClick={e => handleNavClick(e, link)}
                   style={{
                     position: "relative", fontSize: 14, fontWeight: 500,
                     padding: "8px 16px", borderRadius: 9999, textDecoration: "none",
@@ -99,11 +115,12 @@ export default function Navbar() {
             }}
           >
             {LINKS.map(link => {
-              const active = location.pathname === link.to;
+              const active = link.match.includes(location.pathname);
               return (
                 <Link
                   key={link.to}
                   to={link.to}
+                  onClick={e => handleNavClick(e, link)}
                   style={{
                     fontSize: 15, fontWeight: 500, padding: "12px 16px",
                     borderRadius: 14, textDecoration: "none",
